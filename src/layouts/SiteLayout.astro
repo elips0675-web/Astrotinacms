@@ -6,13 +6,20 @@ import 'react-toastify/dist/ReactToastify.css';
 interface Props {
   title: string;
   description?: string;
+  ogType?: 'website' | 'article';
+  ogImage?: string;
 }
 
 const {
   title,
   description = 'NLB Studio 7 — библиотека нового поколения, услуги, события и печать.',
+  ogType = 'website',
+  ogImage = '/og-default.jpg',
 } = Astro.props;
-const canonical = new URL(Astro.url.pathname, Astro.site ?? 'http://localhost:4321').toString();
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url).toString();
+const ogImageUrl = new URL(ogImage, Astro.site ?? Astro.url).toString();
+const OG_WIDTH = 1200;
+const OG_HEIGHT = 630;
 ---
 
 <!DOCTYPE html>
@@ -25,6 +32,16 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? 'http://localhost:43
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content="NLB Studio 7" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content={String(OG_WIDTH)} />
+    <meta property="og:image:height" content={String(OG_HEIGHT)} />
+    <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body class="bg-white">
     <slot />
