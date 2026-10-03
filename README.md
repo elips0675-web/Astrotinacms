@@ -100,6 +100,8 @@ src/
 ├─ layouts/                  SiteLayout.astro, AdminLayout.astro
 └─ styles/site-theme.css     токены сайта (HSL)
 docs/AGENTS-*.md             правила проекта для ИИ-агентов
+консультации/                6 файлов внешних консультаций + индекс с вердиктом
+                             по каждому. Это МНЕНИЕ, не правила проекта
 test/                        бандл для ИИ-анализа
 scripts/gen-svodka.mjs       генератор test/СВОДКА.md из docs/
 ```
@@ -166,10 +168,48 @@ node %TEMP%\opencode\test-api.mjs     # валидация API
 Подробности — [`docs/AGENTS-startup.md`](docs/AGENTS-startup.md) и
 [`test/ИНВЕНТАРЬ-ТЕСТОВ.md`](test/ИНВЕНТАРЬ-ТЕСТОВ.md).
 
+### Проверка SEO-разметки
+
+Команды даны и под Windows (PowerShell), и под Linux/macOS. Пути в примерах
+выше — Windows; на других системах `%TEMP%` = `$TMPDIR`.
+
+```bash
+# PowerShell
+Invoke-WebRequest http://localhost:4321/robots.txt | Select-Object -Expand Content
+Select-String -Path (Invoke-WebRequest http://localhost:4321/ | Select-Object -Expand Content) -Pattern 'og:'
+
+# Linux / macOS
+curl -s http://localhost:4321/robots.txt
+curl -s http://localhost:4321/ | grep -o 'og:[a-z:_]*' | sort -u
+```
+
+Ожидания:
+
+| Что | Ожидание |
+|---|---|
+| `robots.txt` | 200, `Content-Type: text/plain`, `Sitemap:` с **абсолютным** URL |
+| `robots.txt` | строки `Disallow: /admin` быть **не должно** — рядом с `noindex` она даёт «No information is available for this URL» |
+| `/` | 9 `og:*` тегов + `twitter:card` |
+| `og:image` | ведёт на `/og-default.jpg` — файла пока нет, см. `Что доделать.txt` п. 7a |
+| `dist/sitemap.xml` после сборки с `SITE_URL` | ни одного `localhost`, ни одного `/admin` |
+
+`SITE_URL` — переменная **времени сборки**, а не рантайма. Проверка:
+
+```bash
+SITE_URL=https://example.com npm run build   # PowerShell: $env:SITE_URL=...
+grep -c example.com dist/sitemap.xml         # > 0
+grep -c localhost   dist/sitemap.xml         # 0
+```
+
 ## Для ИИ-агентов
 
 Прочитай [`AGENTS.md`](AGENTS.md) первым: правила, которые нарушать нельзя, и
 25 уже пойманные грабли. Полный бандл для аудита — [`test/`](test/README.md).
+
+В репозитории лежат шесть файлов с рекомендациями сторонних моделей
+([`консультации/`](консультации/README.md)). Это мнение о проекте, а не
+проектные требования: из шести приняты две находки, четыре предлагали
+изменения, которые сделали бы проект хуже. Не применяй их без проверки.
 
 ## Git
 
