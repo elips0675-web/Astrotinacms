@@ -1,0 +1,230 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import AdminShell from '../../components/AdminShell.astro';
+import Icon from '../../components/Icon.astro';
+import { WP_STATS, MOCK_POSTS } from '../../data/mock';
+
+const stats = [
+  {
+    title: 'Всего публикаций',
+    value: WP_STATS.totalPosts,
+    sub: 'за неделю',
+    icon: 'file',
+    color: 'bg-gradient-to-br from-orange-400 to-orange-600',
+    trend: '+12.4%',
+    trendUp: true,
+  },
+  {
+    title: 'Услуги',
+    value: WP_STATS.totalServices,
+    sub: 'активных',
+    icon: 'briefcase',
+    color: 'bg-gradient-to-br from-purple-400 to-purple-600',
+    trend: 'Stable',
+    trendUp: true,
+  },
+  {
+    title: 'Пользователи',
+    value: WP_STATS.users,
+    sub: 'онлайн',
+    icon: 'users',
+    color: 'bg-gradient-to-br from-emerald-400 to-emerald-600',
+    trend: '-2.1%',
+    trendUp: false,
+  },
+  {
+    title: 'Здоровье сайта',
+    value: WP_STATS.siteHealth,
+    sub: 'без проблем',
+    icon: 'activity',
+    color: 'bg-gradient-to-br from-red-400 to-red-600',
+    trend: 'Perfect',
+    trendUp: true,
+  },
+];
+---
+
+<AdminLayout title="SuperPanel — NLB Studio">
+  <AdminShell>
+    <div class="space-y-10">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div class="space-y-1">
+          <h1 class="text-5xl font-black tracking-tighter text-slate-800 uppercase italic">SuperPanel</h1>
+          <p class="text-slate-400 font-bold uppercase text-[10px] tracking-[0.4em] ml-1">Добро пожаловать</p>
+        </div>
+        <div class="flex items-center gap-4">
+          <a
+            href="/"
+            target="_blank"
+            class="argon-shadow rounded-2xl bg-white border-none font-black text-[10px] uppercase tracking-[0.2em] h-12 px-8 flex items-center transition-all active:scale-95"
+          >
+            <Icon name="external" class="h-4 w-4 mr-3" />
+            Открыть сайт
+          </a>
+          <a
+            href="/admin/content/new"
+            class="argon-shadow rounded-2xl bg-primary hover:bg-primary/90 text-white font-black text-[10px] uppercase tracking-[0.2em] h-12 px-8 flex items-center transition-all active:scale-95 shadow-lg shadow-primary/20"
+          >
+            <Icon name="plus" class="h-4 w-4 mr-3" />
+            Новый пост
+          </a>
+        </div>
+      </div>
+
+      <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+        {
+          stats.map((stat) => (
+            <div class="border-none argon-shadow rounded-2xl overflow-hidden group transition-all hover:-translate-y-2 duration-500 bg-white">
+              <div class="p-8">
+                <div class="flex items-start justify-between">
+                  <div class="space-y-3">
+                    <p class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">{stat.title}</p>
+                    <h3 class="text-3xl font-black text-slate-800 italic">{stat.value}</h3>
+                  </div>
+                  <div
+                    class:list={[
+                      stat.color,
+                      'h-14 w-14 rounded-2xl flex items-center justify-center text-white shadow-xl rotate-3 group-hover:rotate-0 transition-all duration-500',
+                    ]}
+                  >
+                    <Icon name={stat.icon} class="h-7 w-7" />
+                  </div>
+                </div>
+                <div class="mt-6 flex items-center gap-3 bg-slate-50/50 p-2 rounded-xl border border-slate-100/50 w-fit">
+                  <span
+                    class:list={[
+                      'text-[10px] font-black uppercase tracking-tighter px-2 py-0.5 rounded-lg',
+                      stat.trendUp ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700',
+                    ]}
+                  >
+                    {stat.trend}
+                  </span>
+                  <span class="text-[10px] text-slate-400 font-bold uppercase tracking-tight">{stat.sub}</span>
+                </div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="grid gap-10 lg:grid-cols-12">
+        <div class="lg:col-span-8 border-none argon-shadow rounded-3xl bg-white overflow-hidden">
+          <div class="flex flex-row items-center justify-between space-y-0 p-10 pb-6">
+            <div class="space-y-1">
+              <h2 class="text-2xl font-black text-slate-800 uppercase italic">Последняя активность</h2>
+              <p class="font-bold text-[10px] uppercase tracking-widest text-slate-400">Обновления контента за сегодня</p>
+            </div>
+            <button
+              type="button"
+              class="rounded-2xl hover:bg-slate-50 h-10 w-10 flex items-center justify-center"
+              aria-label="Ещё"
+            >
+              <Icon name="moreVertical" class="h-5 w-5 text-slate-400" />
+            </button>
+          </div>
+
+          <div class="p-10 pt-0">
+            <div class="space-y-2">
+              {
+                MOCK_POSTS.map((post) => (
+                  <div class="flex items-center justify-between p-5 rounded-2xl hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-100">
+                    <div class="flex items-center gap-6">
+                      <div class="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-black text-xl italic shadow-inner">
+                        {post.title[0]}
+                      </div>
+                      <div class="flex flex-col gap-1">
+                        <span class="font-black text-slate-800 group-hover:text-primary transition-all uppercase tracking-tighter italic">
+                          {post.title}
+                        </span>
+                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-[0.1em]">
+                          {post.author} • {post.date}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-6">
+                      <span
+                        class:list={[
+                          'rounded-xl px-4 py-1.5 text-[9px] font-black uppercase tracking-[0.2em] border-none shadow-sm',
+                          post.status === 'publish' ? 'bg-emerald-100 text-emerald-700' : 'bg-orange-100 text-orange-700',
+                        ]}
+                      >
+                        {post.status}
+                      </span>
+                      <a
+                        href={`/admin/content/new/${post.id}`}
+                        class="h-10 w-10 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-slate-100"
+                        aria-label={`Редактировать ${post.title}`}
+                      >
+                        <Icon name="edit" class="h-4 w-4 text-slate-500" />
+                      </a>
+                    </div>
+                  </div>
+                ))
+              }
+            </div>
+
+            <div class="pt-10 border-t mt-8 text-center">
+              <a
+                href="/admin/content"
+                class="text-primary font-black uppercase tracking-[0.3em] text-[10px] gap-3 group transition-all inline-flex items-center"
+              >
+                Все публикации
+                <Icon
+                  name="arrowUpRight"
+                  class="h-4 w-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"
+                />
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-4 space-y-10">
+          <div class="border-none argon-shadow bg-[#1a1c1e] text-white rounded-3xl overflow-hidden relative shadow-2xl">
+            <div class="absolute top-0 right-0 p-8 opacity-5">
+              <Icon name="zap" class="h-40 w-40" />
+            </div>
+
+            <div class="p-10">
+              <h2 class="text-2xl font-black uppercase italic tracking-tight">Быстрая помощь</h2>
+              <p class="text-slate-500 font-bold uppercase text-[9px] tracking-widest">Всё для старта работы</p>
+            </div>
+
+            <div class="p-10 pt-0 space-y-8 relative z-10">
+              <div class="p-8 rounded-2xl bg-white/5 border border-white/5 space-y-5 transition-all hover:bg-white/10 group">
+                <h3 class="font-black text-xs uppercase tracking-[0.2em] flex items-center gap-3 italic">
+                  <span class="h-2 w-2 bg-primary rounded-full animate-pulse"></span>
+                  Начать новый пост
+                </h3>
+                <p class="text-[10px] text-slate-400 leading-relaxed font-bold uppercase tracking-tight">
+                  Создайте публикацию и опубликуйте её на сайте одним кликом.
+                </p>
+                <a
+                  href="/admin/content/new"
+                  class="w-full bg-white text-[#1a1c1e] hover:bg-primary hover:text-white font-black uppercase tracking-[0.3em] text-[9px] h-12 rounded-2xl transition-all shadow-xl flex items-center justify-center"
+                >
+                  Создать пост
+                </a>
+              </div>
+
+              <div class="p-8 rounded-2xl bg-primary/10 border border-primary/20 space-y-5 transition-all hover:bg-primary/20 group">
+                <h3 class="font-black text-xs text-primary flex items-center gap-3 italic uppercase tracking-[0.2em]">
+                  <Icon name="activity" class="h-4 w-4" />
+                  Совет по производительности
+                </h3>
+                <p class="text-[10px] text-slate-400 leading-relaxed font-bold uppercase tracking-tight">
+                  Оптимизируйте изображения в медиатеке — это ускоряет загрузку страниц.
+                </p>
+                <a
+                  href="/admin/media"
+                  class="w-full border border-primary/30 text-primary hover:bg-primary hover:text-white font-black uppercase tracking-[0.3em] text-[9px] h-12 rounded-2xl transition-all flex items-center justify-center"
+                >
+                  Открыть медиатеку
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </AdminShell>
+</AdminLayout>

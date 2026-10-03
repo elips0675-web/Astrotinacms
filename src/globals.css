@@ -1,0 +1,82 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+@layer base {
+  :root {
+    /* Argon-inspired color palette with modern geometry */
+    --background: 210 40% 98%; /* Light grayish-blue background */
+    --foreground: 225 20% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 225 20% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 225 20% 10%;
+    --primary: 221 83% 53%; /* Vivid Blue */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 195 80% 50%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 15% 45%;
+    --accent: 221 83% 95%;
+    --accent-foreground: 221 83% 30%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 210 40% 90%;
+    --input: 210 40% 90%;
+    --ring: 221 83% 53%;
+    --radius: 0.75rem; /* Reduced radius for a more modern, rectangular look */
+    
+    /* Sidebar specific */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 225 20% 30%;
+    --sidebar-primary: 221 83% 53%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 40% 96%;
+    --sidebar-accent-foreground: 221 83% 53%;
+    --sidebar-border: 210 40% 92%;
+    --sidebar-ring: 221 83% 53%;
+  }
+  .dark {
+    --background: 225 30% 5%;
+    --foreground: 0 0% 98%;
+    --card: 225 30% 10%;
+    --card-foreground: 0 0% 98%;
+    --popover: 225 30% 10%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 221 83% 53%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 195 80% 50%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 225 30% 15%;
+    --muted-foreground: 225 10% 65%;
+    --accent: 225 30% 20%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 225 30% 20%;
+    --input: 225 30% 20%;
+    --ring: 221 83% 53%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+}
+
+.argon-shadow {
+  box-shadow: 0 0 2rem 0 rgba(136, 152, 170, .12); /* Slightly more subtle shadow */
+}
+
+.argon-card-icon {
+  @apply h-12 w-12 rounded-xl flex items-center justify-center shadow-lg transition-transform hover:scale-110;
+}

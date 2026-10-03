@@ -1,0 +1,142 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import AdminShell from '../../../components/AdminShell.astro';
+import PageHeader from '../../../components/PageHeader.astro';
+import Icon from '../../../components/Icon.astro';
+import { readAll } from '../../../lib/content';
+
+export const prerender = false;
+
+const posts = await readAll();
+
+const statusLabel: Record<string, string> = {
+  publish: 'Опубликовано',
+  draft: 'Черновик',
+  pending: 'На модерации',
+};
+
+const statusClass: Record<string, string> = {
+  publish: 'bg-emerald-100 text-emerald-700',
+  draft: 'bg-amber-100 text-amber-700',
+  pending: 'bg-blue-100 text-blue-700',
+};
+---
+
+<AdminLayout title="Контент — SuperPanel">
+  <AdminShell>
+    <div class="space-y-6">
+      <PageHeader
+        title="Контент"
+        subtitle="Публикации и страницы сайта"
+        actionHref="/admin/content/new"
+        actionLabel="Новый материал"
+      />
+
+      <div class="relative">
+        <input
+          id="post-search"
+          type="search"
+          placeholder="Поиск по публикациям..."
+          class="h-12 w-full rounded-xl bg-white border border-slate-200 px-4 pl-11 font-medium text-sm text-slate-900 outline-none focus-visible:ring-1 focus-visible:ring-primary"
+        />
+      </div>
+
+      <div class="bg-card rounded-xl border shadow-sm overflow-hidden">
+        <table class="w-full text-sm">
+          <thead class="bg-muted/30">
+            <tr>
+              <th class="text-left p-4 font-semibold w-[400px]">Название</th>
+              <th class="text-left p-4 font-semibold">Тип</th>
+              <th class="text-left p-4 font-semibold">Автор</th>
+              <th class="text-left p-4 font-semibold">Статус</th>
+              <th class="text-left p-4 font-semibold">Дата</th>
+              <th class="text-right p-4 font-semibold">Действия</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              posts.map((post) => (
+                <tr class="border-b last:border-0 hover:bg-muted/20 transition-colors" data-post-id={post.id}>
+                  <td class="p-4 font-medium">
+                    <a
+                      href={`/admin/content/new/${post.id}`}
+                      class="hover:text-primary transition-colors flex items-center gap-3"
+                    >
+                      <div class="h-8 w-8 rounded bg-primary/10 flex items-center justify-center shrink-0">
+                        <Icon name="file" class="h-4 w-4 text-primary" />
+                      </div>
+                      {post.title}
+                    </a>
+                  </td>
+                  <td class="p-4">
+                    <span class="capitalize text-xs inline-block border rounded-md px-2 py-0.5">{post.type}</span>
+                  </td>
+                  <td class="p-4 text-muted-foreground text-sm">{post.author}</td>
+                  <td class="p-4">
+                    <span
+                      class:list={[
+                        'capitalize font-medium border-none text-[10px] px-2 py-0.5 rounded-md inline-block',
+                        statusClass[post.status],
+                      ]}
+                    >
+                      {statusLabel[post.status]}
+                    </span>
+                  </td>
+                  <td class="p-4 text-muted-foreground text-sm">{post.date}</td>
+                  <td class="p-4 text-right">
+                    <div class="inline-flex items-center gap-1">
+                      <a
+                        href={`/admin/content/new?id=${post.id}`}
+                        class="h-8 w-8 rounded-lg inline-flex items-center justify-center hover:bg-muted text-slate-500"
+                        aria-label={`Редактировать ${post.title}`}
+                      >
+                        <Icon name="edit" class="h-4 w-4" />
+                      </a>
+                      <button
+                        type="button"
+                        class="h-8 w-8 rounded-lg inline-flex items-center justify-center hover:bg-destructive/10 text-slate-500 hover:text-destructive"
+                        aria-label={`Удалить ${post.title}`}
+                        data-delete-post={post.id}
+                      >
+                        <Icon name="trash" class="h-4 w-4" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </AdminShell>
+</AdminLayout>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-delete-post]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const id = button.dataset.deletePost;
+      if (!id) return;
+      const row = button.closest('tr');
+      const title = row?.querySelector('a')?.textContent?.trim() ?? '';
+      if (!window.confirm(`Удалить «${title}»? Действие необратимо.`)) return;
+      button.disabled = true;
+      try {
+        const res = await fetch(`/api/admin/posts?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        row?.remove();
+      } catch {
+        button.disabled = false;
+        window.alert('Не удалось удалить запись.');
+      }
+    });
+  });
+
+  const search = document.getElementById('post-search') as HTMLInputElement | null;
+  search?.addEventListener('input', () => {
+    const needle = search.value.trim().toLowerCase();
+    document.querySelectorAll<HTMLTableRowElement>('tbody tr').forEach((row) => {
+      row.hidden = needle.length > 0 && !row.textContent?.toLowerCase().includes(needle);
+    });
+  });
+</script>

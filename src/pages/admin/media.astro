@@ -1,0 +1,67 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import AdminShell from '../../components/AdminShell.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import SearchToolbar from '../../components/SearchToolbar.astro';
+import Icon from '../../components/Icon.astro';
+import { MOCK_MEDIA } from '../../data/mock';
+---
+
+<AdminLayout title="Медиатека — SuperPanel">
+  <AdminShell>
+    <div class="space-y-6">
+      <PageHeader title="Медиатека" subtitle="Изображения и файлы сайта" />
+
+      <SearchToolbar placeholder="Поиск по файлам..." />
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+        {
+          MOCK_MEDIA.map((item) => (
+            <div class="group relative overflow-hidden rounded-xl bg-muted/20 hover:bg-muted/40 transition-colors aspect-square">
+              <img
+                src={item.url}
+                alt={item.title}
+                loading="lazy"
+                width="300"
+                height="300"
+                class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+              />
+              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-2">
+                <span class="text-[10px] text-white font-medium truncate mb-1">{item.title}</span>
+                <div class="flex items-center justify-between">
+                  <span class="text-[9px] text-white/80">{item.size}</span>
+                  <div class="flex gap-1">
+                    <a
+                      href={item.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      class="h-6 w-6 rounded-sm bg-white/90 text-slate-700 inline-flex items-center justify-center"
+                      aria-label={`Открыть ${item.title}`}
+                    >
+                      <Icon name="info" class="h-3 w-3" />
+                    </a>
+                    <button
+                      type="button"
+                      class="h-6 w-6 rounded-sm bg-red-500 text-white inline-flex items-center justify-center"
+                      aria-label={`Удалить ${item.title}`}
+                    >
+                      <Icon name="trash" class="h-3 w-3" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))
+        }
+
+        <button
+          type="button"
+          class="aspect-square rounded-xl border-2 border-dashed border-primary/20 bg-primary/5 flex flex-col items-center justify-center gap-2 hover:bg-primary/10 transition-colors text-primary"
+        >
+          <Icon name="plus" class="h-8 w-8" />
+          <span class="text-xs font-semibold">Добавить</span>
+        </button>
+      </div>
+    </div>
+  </AdminShell>
+</AdminLayout>

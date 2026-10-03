@@ -1,0 +1,89 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import AdminShell from '../../../components/AdminShell.astro';
+import PageHeader from '../../../components/PageHeader.astro';
+import SearchToolbar from '../../../components/SearchToolbar.astro';
+import Icon from '../../../components/Icon.astro';
+import { MOCK_EVENTS } from '../../../data/mock';
+
+const statusLabel: Record<string, string> = {
+  upcoming: 'Предстоит',
+  past: 'Прошло',
+  cancelled: 'Отменено',
+};
+
+const statusClass: Record<string, string> = {
+  upcoming: 'bg-emerald-100 text-emerald-700',
+  past: 'bg-muted text-muted-foreground',
+  cancelled: 'bg-destructive text-destructive-foreground',
+};
+---
+
+<AdminLayout title="Мероприятия — SuperPanel">
+  <AdminShell>
+    <div class="space-y-6">
+      <PageHeader
+        title="Мероприятия"
+        subtitle="События, мастер-классы и лекции"
+        actionHref="/admin/events/new"
+        actionLabel="Создать событие"
+      />
+
+      <SearchToolbar placeholder="Поиск по мероприятиям..." />
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {
+          MOCK_EVENTS.map((event) => (
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow flex flex-col">
+              <div class="p-6 pb-3 flex flex-row items-start justify-between space-y-0">
+                <div class="space-y-1">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class:list={['rounded-md px-2 py-0.5 text-[10px] font-black uppercase tracking-widest', statusClass[event.status]]}>
+                      {statusLabel[event.status]}
+                    </span>
+                  </div>
+                  <h2 class="text-xl font-black text-slate-800">{event.title}</h2>
+                </div>
+                <a
+                  href={`/admin/events/new/${event.id}`}
+                  class="h-8 w-8 rounded-lg inline-flex items-center justify-center hover:bg-slate-100 text-slate-400"
+                  aria-label={`Редактировать ${event.title}`}
+                >
+                  <Icon name="moreVertical" class="h-4 w-4" />
+                </a>
+              </div>
+
+              <div class="p-6 pt-3 space-y-4 flex-1 flex flex-col">
+                <div class="space-y-2">
+                  <div class="flex items-center text-sm text-muted-foreground">
+                    <Icon name="calendar" class="mr-2 h-4 w-4 text-primary" />
+                    {event.date}
+                  </div>
+                  <div class="flex items-center text-sm text-muted-foreground">
+                    <Icon name="clock" class="mr-2 h-4 w-4 text-primary" />
+                    {event.time}
+                  </div>
+                  <div class="flex items-center text-sm text-muted-foreground">
+                    <Icon name="pin" class="mr-2 h-4 w-4 text-primary" />
+                    {event.location}
+                  </div>
+                </div>
+
+                <p class="text-sm text-muted-foreground flex-1">{event.description}</p>
+
+                <div class="pt-2">
+                  <a
+                    href={`/admin/events/new/${event.id}`}
+                    class="w-full h-10 rounded-xl border border-slate-200 hover:bg-slate-50 flex items-center justify-center text-xs font-black uppercase tracking-widest text-slate-600"
+                  >
+                    Подробнее
+                  </a>
+                </div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </AdminShell>
+</AdminLayout>

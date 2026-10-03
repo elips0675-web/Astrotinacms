@@ -1,0 +1,33 @@
+---
+import AdminLayout from '../layouts/AdminLayout.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<AdminLayout title="Страница не найдена — SuperPanel">
+  <main class="min-h-screen bg-slate-50/50 flex items-center justify-center p-10">
+    <div class="text-center max-w-xl space-y-6">
+      <p class="text-[10px] font-black uppercase tracking-[0.4em] text-primary">SuperPanel</p>
+      <p class="text-7xl font-black tracking-tighter text-slate-800 uppercase italic">404</p>
+      <h1 class="text-2xl font-black text-slate-800 uppercase italic">Страница не найдена</h1>
+      <p class="text-muted-foreground font-bold uppercase text-[10px] tracking-widest">
+        Проверьте адрес или вернитесь на главную панель
+      </p>
+
+      <div class="flex items-center justify-center gap-4 pt-4">
+        <a
+          href="/admin"
+          class="h-12 px-8 rounded-xl bg-primary hover:bg-primary/90 text-white font-black text-[10px] uppercase tracking-[0.2em] flex items-center transition-all active:scale-95"
+        >
+          <Icon name="dashboard" class="h-4 w-4 mr-3" />
+          В панель
+        </a>
+        <a
+          href="/"
+          class="h-12 px-8 rounded-xl bg-white argon-shadow font-black text-[10px] uppercase tracking-[0.2em] text-slate-600 flex items-center transition-all active:scale-95"
+        >
+          На главную
+        </a>
+      </div>
+    </div>
+  </main>
+</AdminLayout>

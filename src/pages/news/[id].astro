@@ -1,0 +1,24 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import Page from '../../site/routes/news-detail';
+import { readPublished, toPublicNews } from '../../lib/content';
+
+// Не пререндерится: новость, созданная в админке, должна открываться сразу,
+// без пересборки сайта.
+export const prerender = false;
+
+const { id } = Astro.params;
+const params = { id: id ?? '' };
+const search = Astro.url.search;
+const items = toPublicNews(await readPublished());
+const item = items.find((entry) => String(entry.id) === String(id));
+
+if (!item) Astro.response.status = 404;
+---
+
+<SiteLayout
+  title={`${item?.title ?? 'Новость не найдена'} — Библиотека 2026`}
+  description={item ? item.description : 'Публикация не найдена.'}
+>
+  <Page params={params} search={search} items={items} client:load />
+</SiteLayout>

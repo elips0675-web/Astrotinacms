@@ -1,0 +1,271 @@
+---
+import Icon from './Icon.astro';
+import type { ContentItem } from '../lib/content';
+
+export interface Props {
+  post?: ContentItem;
+}
+
+const { post } = Astro.props;
+
+const inputClass =
+  'w-full h-12 rounded-xl bg-slate-50 border-slate-200 px-4 font-bold text-slate-900 outline-none focus-visible:ring-1 focus-visible:ring-primary';
+const labelClass = 'block text-[10px] font-black uppercase tracking-[0.2em] text-primary ml-1 mb-2';
+const fieldClass =
+  'w-full rounded-xl bg-slate-50 border-slate-200 p-4 font-bold text-sm text-slate-900 outline-none focus-visible:ring-1 focus-visible:ring-primary';
+---
+
+<div class="max-w-5xl mx-auto space-y-6">
+  <div class="flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      <a
+        href="/admin/content"
+        class="h-10 w-10 rounded-xl inline-flex items-center justify-center hover:bg-slate-100 text-slate-500"
+        aria-label="Назад"
+      >
+        <Icon name="chevronLeft" class="h-5 w-5" />
+      </a>
+      <h1 class="text-2xl font-black text-slate-800 uppercase italic">
+        {post ? 'Редактировать пост' : 'Новый пост'}
+      </h1>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <button
+        type="button"
+        class="hidden sm:flex h-12 px-6 rounded-xl border border-slate-200 bg-white font-black text-[10px] uppercase tracking-widest items-center hover:bg-slate-50"
+      >
+        <Icon name="eye" class="mr-2 h-4 w-4" />
+        Предпросмотр
+      </button>
+      <button
+        type="button"
+        id="save-draft"
+        class="hidden sm:flex h-12 px-6 rounded-xl border border-slate-200 bg-white font-black text-[10px] uppercase tracking-widest hover:bg-slate-50"
+      >
+        Сохранить черновик
+      </button>
+      <button
+        type="button"
+        id="publish-post"
+        class="h-12 px-8 rounded-xl bg-primary hover:bg-primary/90 text-white font-black text-[10px] uppercase tracking-widest flex items-center"
+      >
+        <Icon name="save" class="mr-2 h-4 w-4" />
+        {post ? 'Обновить' : 'Опубликовать'}
+      </button>
+    </div>
+  </div>
+
+  <form id="editor-form" data-post-id={post?.id ?? ''} class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2 space-y-6">
+      <div class="bg-white rounded-xl border border-slate-100 shadow-sm p-6 space-y-6">
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <label class={labelClass} for="post-title">Заголовок</label>
+            <span class="text-secondary text-[10px] font-black uppercase tracking-widest flex items-center gap-1">
+              <Icon name="sparkles" class="h-3 w-3" />
+              Сгенерировать
+            </span>
+          </div>
+          <input
+            id="post-title"
+            name="title"
+            type="text"
+            placeholder="Название публикации"
+            value={post?.title}
+            class:list={[inputClass, 'text-lg']}
+          />
+        </div>
+
+        <div class="space-y-2">
+          <label class={labelClass} for="post-content">Содержимое</label>
+          <textarea
+            id="post-content"
+            name="content"
+            placeholder="Текст публикации..."
+            class="min-h-[400px] w-full resize-none leading-relaxed text-base p-4 rounded-xl bg-slate-50 border-slate-200 font-bold text-sm text-slate-900 outline-none focus-visible:ring-1 focus-visible:ring-primary"
+          >{post?.content || post?.excerpt}</textarea>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
+        <div class="p-6 pb-3 flex items-center gap-2">
+          <Icon name="sparkles" class="h-4 w-4 text-secondary" />
+          <h2 class="text-lg font-black text-slate-800">AI-ассистент</h2>
+        </div>
+
+        <div class="p-6 pt-0 space-y-6">
+          <div class="space-y-2">
+            <label class={labelClass} for="meta">Meta description</label>
+            <textarea
+              id="meta"
+              name="meta"
+              placeholder="Описание для поисковых систем (до 160 символов)"
+              class={fieldClass}></textarea>
+          </div>
+
+          <div class="space-y-2">
+            <label class={labelClass} for="summary">Краткое описание</label>
+            <textarea
+              id="summary"
+              name="summary"
+              placeholder="Краткое описание для карточек и соцсетей"
+              class={fieldClass}>{post?.excerpt}</textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="space-y-6">
+      <div class="bg-white rounded-xl border border-slate-100 shadow-sm p-6 space-y-4">
+        <h2 class="text-md font-black text-slate-800">Информация о публикации</h2>
+        <div class="flex justify-between items-center text-sm">
+          <span class="text-muted-foreground flex items-center gap-2">
+            <Icon name="check" class="h-4 w-4" />
+            Статус:
+          </span>
+          <span class="font-medium text-emerald-600">Черновик</span>
+        </div>
+        <div class="flex justify-between items-center text-sm">
+          <span class="text-muted-foreground flex items-center gap-2">
+            <Icon name="eye" class="h-4 w-4" />
+            Видимость:
+          </span>
+          <span class="font-medium">Публичная</span>
+        </div>
+        <div class="flex justify-between items-center text-sm">
+          <span class="text-muted-foreground flex items-center gap-2">
+            <Icon name="calendar" class="h-4 w-4" />
+            Расписание:
+          </span>
+          <span class="font-medium">Сразу</span>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl border border-slate-100 shadow-sm p-6 space-y-4">
+        <h2 class="text-md font-black text-slate-800">Таксономия</h2>
+        <div class="space-y-2">
+          <label class="text-xs uppercase tracking-wider font-bold text-muted-foreground" for="category">
+            Категория
+          </label>
+          <input
+            id="category"
+            name="category"
+            type="text"
+            placeholder="Поиск категорий..."
+            value={post?.category}
+            class="h-10 w-full rounded-lg bg-slate-50 border-slate-200 px-3 font-bold text-sm outline-none"
+          />
+        </div>
+        <div class="space-y-2">
+          <label class="text-xs uppercase tracking-wider font-bold text-muted-foreground" for="tags">Теги</label>
+          <input
+            id="tags"
+            name="tags"
+            type="text"
+            placeholder="Введите теги..."
+            value={post?.tags}
+            class="h-10 w-full rounded-lg bg-slate-50 border-slate-200 px-3 font-bold text-sm outline-none"
+          />
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl border border-slate-100 shadow-sm p-6">
+        <h2 class="text-md font-black text-slate-800 mb-4">Главное изображение</h2>
+        <button
+          type="button"
+          class="w-full aspect-video bg-muted rounded-lg border-2 border-dashed flex items-center justify-center hover:bg-muted/80 transition-colors group"
+        >
+          <span class="text-center">
+            <Icon
+              name="plus"
+              class="h-8 w-8 mx-auto text-muted-foreground group-hover:text-primary transition-colors"
+            />
+            <span class="text-xs text-muted-foreground mt-2 block">Установить изображение</span>
+          </span>
+        </button>
+        <input type="hidden" name="image" id="image" value={post?.image ?? ''} />
+      </div>
+    </div>
+  </form>
+
+  <div
+    id="editor-toast"
+    class="fixed bottom-6 right-6 z-50 hidden rounded-xl px-5 py-4 text-sm font-bold text-white shadow-lg"
+    role="status"
+    aria-live="polite"
+  >
+  </div>
+</div>
+
+<script>
+  type ContentPayload = {
+    id?: number;
+    title: string;
+    status: 'publish' | 'draft';
+    excerpt: string;
+    content: string;
+    category: string;
+    tags: string;
+    image: string;
+  };
+
+  const form = document.getElementById('editor-form') as HTMLFormElement | null;
+  const toast = document.getElementById('editor-toast');
+
+  function notify(message: string, ok: boolean) {
+    if (!toast) return;
+    toast.textContent = message;
+    toast.className =
+      'fixed bottom-6 right-6 z-50 rounded-xl px-5 py-4 text-sm font-bold text-white shadow-lg ' +
+      (ok ? 'bg-emerald-600' : 'bg-red-600');
+    window.setTimeout(() => {
+      if (toast) toast.classList.add('hidden');
+    }, 3200);
+  }
+
+  function collect(status: 'publish' | 'draft'): ContentPayload {
+    const value = (name: string) =>
+      (form?.querySelector<HTMLInputElement | HTMLTextAreaElement>(`[name="${name}"]`)?.value ?? '').trim();
+    const idRaw = form?.dataset.postId ?? '';
+    return {
+      id: idRaw ? Number(idRaw) : undefined,
+      title: value('title') || 'Без названия',
+      status,
+      excerpt: value('summary') || value('meta') || value('content'),
+      content: value('content'),
+      category: value('category'),
+      tags: value('tags'),
+      image: value('image'),
+    };
+  }
+
+  async function save(status: 'publish' | 'draft') {
+    const payload = collect(status);
+    try {
+      const res = await fetch('/api/admin/posts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const saved = await res.json();
+      notify(status === 'publish' ? 'Опубликовано' : 'Черновик сохранён', true);
+      if (!form?.dataset.postId) {
+        form.dataset.postId = String(saved.id);
+        window.setTimeout(() => {
+          window.location.href = '/admin/content';
+        }, 900);
+      }
+    } catch {
+      notify('Не удалось сохранить. Проверь, что сервер запущен.', false);
+    }
+  }
+
+  document.getElementById('publish-post')?.addEventListener('click', () => save('publish'));
+  document.getElementById('save-draft')?.addEventListener('click', () => save('draft'));
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    save('publish');
+  });
+</script>

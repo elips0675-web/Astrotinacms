@@ -1,0 +1,33 @@
+---
+import AdminLayout from '../../../../layouts/AdminLayout.astro';
+import AdminShell from '../../../../components/AdminShell.astro';
+import ContentEditor from '../../../../components/ContentEditor.astro';
+import { readAll } from '../../../../lib/content';
+import type { ContentItem } from '../../../../lib/content';
+
+export const prerender = false;
+
+const { id } = Astro.params;
+const posts = await readAll();
+const post = posts.find((p) => String(p.id) === String(id));
+---
+
+<AdminLayout title={`${post?.title ?? 'Пост не найден'} — SuperPanel`}>
+  <AdminShell>
+    {
+      post ? (
+        <ContentEditor post={post} />
+      ) : (
+        <div class="max-w-3xl mx-auto text-center py-20">
+          <h1 class="text-2xl font-black text-slate-800 mb-4">Пост не найден</h1>
+          <a
+            href="/admin/content"
+            class="inline-flex h-12 px-6 items-center rounded-xl border border-slate-200 bg-white font-black text-[10px] uppercase tracking-widest"
+          >
+            Вернуться к списку
+          </a>
+        </div>
+      )
+    }
+  </AdminShell>
+</AdminLayout>

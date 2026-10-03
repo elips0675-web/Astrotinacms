@@ -1,0 +1,24 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import SiteDynamicPage from '../../site/lib/SiteDynamicPage';
+import { printingServiceDetails } from '../../site/pages/printing-service-detail';
+import { catalogServices } from '../../data/site/printing-services';
+
+export function getStaticPaths() {
+  const detailIds = Object.keys(printingServiceDetails);
+  const catalogIds = catalogServices.map((s) => s.id);
+  const ids = [...new Set([...detailIds, ...catalogIds])];
+  return ids.map((id) => ({ params: { id } }));
+}
+
+const { id } = Astro.params;
+const params = { id };
+const search = Astro.url.search;
+---
+
+<SiteLayout
+  title="Полиграфические услуги — Библиотека 2026"
+  description="Печать документов, фотографий, визиток и другой полиграфии с расчётом стоимости."
+>
+  <SiteDynamicPage kind="printing" params={params} search={search} client:load />
+</SiteLayout>

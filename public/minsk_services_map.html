@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Карта услуг - Национальная библиотека Беларуси</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+    <style>
+        body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        #map { height: 100vh; width: 100%; }
+        .title-box {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(255,255,255,0.95);
+            border: 2px solid grey;
+            z-index: 1000;
+            font-size: 16px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        .title-box b { font-size: 18px; }
+        .title-box span { font-size: 12px; color: #666; }
+        .legend {
+            position: fixed;
+            bottom: 50px;
+            left: 50px;
+            width: 200px;
+            background-color: white;
+            border: 2px solid grey;
+            z-index: 1000;
+            font-size: 14px;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 3px 3px 5px rgba(0,0,0,0.3);
+        }
+        .legend-item { display: flex; align-items: center; margin-bottom: 5px; }
+        .legend-color { width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; }
+    </style>
+</head>
+<body>
+    <div class="title-box">
+        <b>🗺️ Карта услуг Минска</b><br>
+        <span>Национальная библиотека Беларуси</span>
+    </div>
+
+    <div class="legend">
+        <p style="margin: 0 0 8px 0; font-weight: bold;">Категории услуг:</p>
+        <div class="legend-item"><span class="legend-color" style="background-color: red;"></span><span>Кафе и рестораны</span></div>
+        <div class="legend-item"><span class="legend-color" style="background-color: blue;"></span><span>Магазины</span></div>
+        <div class="legend-item"><span class="legend-color" style="background-color: green;"></span><span>Услуги</span></div>
+        <div class="legend-item"><span class="legend-color" style="background-color: orange;"></span><span>Банки</span></div>
+        <div class="legend-item"><span class="legend-color" style="background-color: purple;"></span><span>Развлечения</span></div>
+    </div>
+
+    <div id="map"></div>
+
+    <script>
+        // Координаты Национальной библиотеки
+        var center = [53.931122, 27.645984];
+
+        // Создаем карту
+        var map = L.map('map').setView(center, 16);
+
+        // Слои
+        var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap',
+            name: 'OpenStreetMap'
+        });
+
+        var positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '© CartoDB',
+            name: 'Светлая тема'
+        });
+
+        var dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '© CartoDB',
+            name: 'Темная тема'
+        });
+
+        osm.addTo(map);
+
+        // Группы для категорий
+        var cafes = L.layerGroup();
+        var shops = L.layerGroup();
+        var services = L.layerGroup();
+        var banks = L.layerGroup();
+        var entertainment = L.layerGroup();
+
+        // Иконки
+        var redIcon = L.icon({iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png', iconSize: [25, 41]});
+        var blueIcon = L.icon({iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png', iconSize: [25, 41]});
+        var greenIcon = L.icon({iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png', iconSize: [25, 41]});
+        var orangeIcon = L.icon({iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png', iconSize: [25, 41]});
+        var purpleIcon = L.icon({iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png', iconSize: [25, 41]});
+        var blackIcon = L.icon({iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png', iconSize: [25, 41]});
+
+        // Данные
+        var cafesData = [
+            {name: 'Кафе "Васильки"', lat: 53.9315, lon: 27.6465, desc: 'Белорусская кухня'},
+            {name: 'Coffee House', lat: 53.9308, lon: 27.6445, desc: 'Кофе и десерты'},
+            {name: 'Пицца Темпо', lat: 53.9320, lon: 27.6470, desc: 'Пицца'},
+            {name: 'Ресторан "Гранд"', lat: 53.9305, lon: 27.6460, desc: 'Европейская кухня'}
+        ];
+
+        var shopsData = [
+            {name: 'Евроопт', lat: 53.9318, lon: 27.6450, desc: 'Супермаркет'},
+            {name: 'Мила', lat: 53.9302, lon: 27.6475, desc: 'Косметика'},
+            {name: 'Белкнига', lat: 53.9325, lon: 27.6440, desc: 'Книги'},
+            {name: 'Zara', lat: 53.9298, lon: 27.6480, desc: 'Одежда'}
+        ];
+
+        var servicesData = [
+            {name: 'Сервис Apple', lat: 53.9310, lon: 27.6478, desc: 'Ремонт техники'},
+            {name: 'Аптека №1', lat: 53.9322, lon: 27.6435, desc: 'Аптека'},
+            {name: 'Парикмахерская', lat: 53.9306, lon: 27.6452, desc: 'Стрижки'},
+            {name: 'Химчистка', lat: 53.9314, lon: 27.6468, desc: 'Чистка одежды'}
+        ];
+
+        var banksData = [
+            {name: 'Беларусбанк', lat: 53.9300, lon: 27.6440, desc: 'Банк'},
+            {name: 'Альфа-Банк', lat: 53.9328, lon: 27.6472, desc: 'Банк'},
+            {name: 'ЕРИП', lat: 53.9312, lon: 27.6485, desc: 'Платежи'}
+        ];
+
+        var entData = [
+            {name: 'Кинотеатр "Беларусь"', lat: 53.9295, lon: 27.6490, desc: 'Кино'},
+            {name: 'Антикафе', lat: 53.9330, lon: 27.6455, desc: 'Настолки'},
+            {name: 'Квест-комната', lat: 53.9304, lon: 27.6430, desc: 'Квесты'}
+        ];
+
+        // Кластер
+        var markers = L.markerClusterGroup();
+
+        // Добавляем маркеры
+        cafesData.forEach(function(p) {
+            var m = L.marker([p.lat, p.lon], {icon: redIcon}).bindPopup('<b>' + p.name + '</b><br>' + p.desc);
+            cafes.addLayer(m);
+            markers.addLayer(L.marker([p.lat, p.lon], {icon: redIcon}).bindPopup('<b>' + p.name + '</b><br>Кафе'));
+        });
+
+        shopsData.forEach(function(p) {
+            var m = L.marker([p.lat, p.lon], {icon: blueIcon}).bindPopup('<b>' + p.name + '</b><br>' + p.desc);
+            shops.addLayer(m);
+            markers.addLayer(L.marker([p.lat, p.lon], {icon: blueIcon}).bindPopup('<b>' + p.name + '</b><br>Магазин'));
+        });
+
+        servicesData.forEach(function(p) {
+            var m = L.marker([p.lat, p.lon], {icon: greenIcon}).bindPopup('<b>' + p.name + '</b><br>' + p.desc);
+            services.addLayer(m);
+            markers.addLayer(L.marker([p.lat, p.lon], {icon: greenIcon}).bindPopup('<b>' + p.name + '</b><br>Услуги'));
+        });
+
+        banksData.forEach(function(p) {
+            var m = L.marker([p.lat, p.lon], {icon: orangeIcon}).bindPopup('<b>' + p.name + '</b><br>' + p.desc);
+            banks.addLayer(m);
+            markers.addLayer(L.marker([p.lat, p.lon], {icon: orangeIcon}).bindPopup('<b>' + p.name + '</b><br>Банк'));
+        });
+
+        entData.forEach(function(p) {
+            var m = L.marker([p.lat, p.lon], {icon: purpleIcon}).bindPopup('<b>' + p.name + '</b><br>' + p.desc);
+            entertainment.addLayer(m);
+            markers.addLayer(L.marker([p.lat, p.lon], {icon: purpleIcon}).bindPopup('<b>' + p.name + '</b><br>Развлечения'));
+        });
+
+        // Центральная точка - библиотека
+        L.marker(center, {icon: blackIcon}).bindPopup('<b>🏛️ Национальная библиотека Беларуси</b>').addTo(map);
+
+        // Круг
+        L.circle(center, {radius: 200, color: 'blue', fillOpacity: 0.1}).addTo(map);
+
+        // Добавляем группы на карту
+        cafes.addTo(map);
+        shops.addTo(map);
+        services.addTo(map);
+        banks.addTo(map);
+        entertainment.addTo(map);
+        // markers.addTo(map); // Кластер (опционально)
+
+        // Управление слоями
+        var baseMaps = {
+            "OpenStreetMap": osm,
+            "Светлая тема": positron,
+            "Темная тема": dark
+        };
+
+        var overlayMaps = {
+            "Кафе и рестораны": cafes,
+            "Магазины": shops,
+            "Услуги": services,
+            "Банки": banks,
+            "Развлечения": entertainment
+        };
+
+        L.control.layers(baseMaps, overlayMaps, {collapsed: false}).addTo(map);
+    </script>
+</body>
+</html>

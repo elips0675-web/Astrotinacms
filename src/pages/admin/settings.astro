@@ -1,0 +1,164 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import AdminShell from '../../components/AdminShell.astro';
+import Icon from '../../components/Icon.astro';
+
+const tabs = [
+  { id: 'general', label: 'Основное', icon: 'globe' },
+  { id: 'appearance', label: 'Внешний вид', icon: 'palette' },
+  { id: 'language', label: 'Язык', icon: 'languages' },
+  { id: 'navigation', label: 'Навигация', icon: 'menu' },
+  { id: 'security', label: 'Безопасность', icon: 'shield' },
+];
+
+const fieldClass =
+  'h-14 rounded-2xl bg-slate-50 border-none argon-shadow shadow-inner font-black px-6 text-slate-800 w-full outline-none focus-visible:ring-1 focus-visible:ring-primary';
+const labelClass = 'block text-[10px] font-black uppercase tracking-[0.2em] text-primary ml-1 mb-4';
+---
+
+<AdminLayout title="Настройки — SuperPanel">
+  <AdminShell>
+    <div class="space-y-8">
+      <div class="flex flex-col gap-3">
+        <h1 class="text-4xl font-black text-slate-800 tracking-tighter uppercase italic">Настройки</h1>
+        <p class="text-muted-foreground font-bold uppercase text-[10px] tracking-[0.3em]">Конфигурация панели и сайта</p>
+      </div>
+
+      <div class="bg-white argon-shadow p-2 inline-flex h-auto rounded-[2rem] overflow-x-auto max-w-full">
+        {
+          tabs.map((tab, index) => (
+            <a
+              href={`#${tab.id}`}
+              class:list={[
+                'gap-3 rounded-2xl px-8 py-3.5 font-black text-[10px] uppercase tracking-[0.2em] transition-all flex items-center whitespace-nowrap',
+                index === 0 ? 'bg-primary text-white' : 'text-slate-500 hover:bg-slate-50 hover:text-primary',
+              ]}
+            >
+              <Icon name={tab.icon} class="h-4 w-4" />
+              {tab.label}
+            </a>
+          ))
+        }
+      </div>
+
+      <div id="general" class="border-none argon-shadow rounded-[2.5rem] overflow-hidden bg-white">
+        <div class="p-10 pb-6">
+          <h2 class="text-2xl font-black text-slate-800 uppercase italic">Айдентика</h2>
+          <p class="font-bold text-[10px] uppercase tracking-widest text-slate-400">Название, слоган и контакты</p>
+        </div>
+
+        <form class="p-10 pt-0 space-y-10" method="post">
+          <div class="grid gap-10 md:grid-cols-2">
+            <div>
+              <label class={labelClass} for="site-title">Бренд</label>
+              <input id="site-title" name="siteTitle" type="text" value="SuperPanel Hub" class={fieldClass} />
+            </div>
+            <div>
+              <label class={labelClass} for="site-tagline">Слоган</label>
+              <input
+                id="site-tagline"
+                name="siteTagline"
+                type="text"
+                value="Professional Content Management"
+                class={fieldClass}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class={labelClass} for="admin-email">Email администратора</label>
+            <input id="admin-email" name="adminEmail" type="email" value="admin@superpanel.com" class={fieldClass} />
+          </div>
+
+          <div class="flex items-center justify-between p-8 rounded-3xl bg-slate-50/50 border-2 border-dashed border-slate-200">
+            <div class="space-y-1">
+              <span class="font-black text-slate-800 uppercase text-sm tracking-tight italic">
+                Privacy Protocol
+              </span>
+              <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                Включить режим приватности для внешних сервисов
+              </p>
+            </div>
+            <label class="inline-flex items-center cursor-pointer">
+              <input type="checkbox" name="privacy" class="sr-only peer" checked />
+              <span
+                class="w-12 h-6 bg-slate-200 rounded-full peer-checked:bg-primary transition-colors relative after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-6"
+              ></span>
+            </label>
+          </div>
+
+          <div class="flex justify-end pt-6">
+            <button
+              type="submit"
+              class="bg-primary hover:bg-primary/90 text-white font-black px-12 h-16 rounded-[1.5rem] argon-shadow shadow-primary/30 uppercase text-[10px] tracking-[0.3em] transition-all active:scale-95 flex items-center"
+            >
+              <Icon name="save" class="mr-3 h-5 w-5" />
+              Сохранить и задеплоить
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div id="appearance" class="border-none argon-shadow rounded-[2.5rem] overflow-hidden bg-white">
+        <div class="p-10 pb-6">
+          <h2 class="text-2xl font-black text-slate-800 uppercase italic">Внешний вид</h2>
+          <p class="font-bold text-[10px] uppercase tracking-widest text-slate-400">Выбор темы оформления</p>
+        </div>
+
+        <div class="p-10 pt-0">
+          <div class="grid gap-10 md:grid-cols-3">
+            <div
+              class="border-4 border-primary rounded-[2rem] p-6 bg-white relative overflow-hidden argon-shadow ring-8 ring-primary/5"
+            >
+              <div
+                class="aspect-video bg-slate-100 rounded-2xl mb-6 overflow-hidden relative shadow-inner flex items-center justify-center"
+              >
+                <span
+                  class="absolute inset-0 bg-primary/20 flex items-center justify-center font-black text-primary uppercase text-[10px] tracking-[0.4em] italic"
+                >
+                  Active Engine
+                </span>
+              </div>
+              <h3 class="font-black text-slate-800 text-base mb-1 italic uppercase tracking-tight">
+                SuperPanel Default
+              </h3>
+              <p class="text-[9px] text-slate-400 font-black uppercase tracking-[0.3em]">Version 1.5.0-viva</p>
+            </div>
+
+            <div class="border-none rounded-[2rem] p-6 bg-white hover:bg-slate-50 transition-all argon-shadow">
+              <div class="aspect-video bg-slate-100 rounded-2xl mb-6 shadow-inner"></div>
+              <h3 class="font-black text-slate-800 text-base mb-1 italic uppercase tracking-tight">Minimalist Pro</h3>
+              <p class="text-[9px] text-slate-400 font-black uppercase tracking-[0.3em]">Version 2.0.4-next</p>
+            </div>
+
+            <div
+              class="border-4 border-dashed border-slate-100 rounded-[2rem] p-6 bg-slate-50/30 flex flex-col items-center justify-center argon-shadow"
+            >
+              <div class="bg-white h-16 w-16 rounded-2xl flex items-center justify-center argon-shadow mb-4 shadow-lg">
+                <Icon name="plus" class="h-8 w-8 text-slate-300" />
+              </div>
+              <span class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Установить тему</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="language" class="border-none argon-shadow rounded-[2.5rem] overflow-hidden bg-white">
+        <div class="p-10 pb-6">
+          <h2 class="text-2xl font-black text-slate-800 uppercase italic">Язык интерфейса</h2>
+          <p class="font-bold text-[10px] uppercase tracking-widest text-slate-400">Русский или английский</p>
+        </div>
+
+        <div class="p-10 pt-0">
+          <div class="max-w-md">
+            <label class={labelClass} for="lang">Выбор языка</label>
+            <select id="lang" name="lang" class={fieldClass}>
+              <option value="ru">Русский (RU)</option>
+              <option value="en">English (Global)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </AdminShell>
+</AdminLayout>

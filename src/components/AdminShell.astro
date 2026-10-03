@@ -1,0 +1,66 @@
+---
+import AdminSidebar from './AdminSidebar.astro';
+import Icon from './Icon.astro';
+
+const lang = 'RU';
+---
+
+<div class="flex min-h-screen w-full bg-slate-50/50">
+  <AdminSidebar />
+
+  <div class="flex flex-col flex-1 bg-transparent">
+    <header class="h-24 flex items-center justify-between px-10 bg-transparent sticky top-0 z-30">
+      <div class="flex items-center gap-8">
+        <a
+          href="/admin"
+          class="md:hidden h-12 w-12 rounded-xl bg-white argon-shadow border-none hover:bg-slate-50 transition-all active:scale-95 flex items-center justify-center"
+          aria-label="Меню"
+        >
+          <Icon name="menu" class="h-5 w-5 text-slate-500" />
+        </a>
+
+        <div class="relative w-96 hidden md:block">
+          <Icon name="search" class="absolute left-4 top-4 h-4 w-4 text-slate-400" />
+          <input
+            type="search"
+            placeholder="Глобальный поиск..."
+            aria-label="Глобальный поиск"
+            class="pl-12 h-12 w-full bg-white border-none argon-shadow focus-visible:ring-primary rounded-xl text-sm font-bold outline-none"
+          />
+        </div>
+      </div>
+
+      <div class="flex items-center gap-6">
+        <div class="flex items-center gap-3 bg-white argon-shadow p-2 rounded-xl">
+          <span class="flex items-center gap-3 h-9 px-4 font-black rounded-xl">
+            <Icon name="languages" class="h-4 w-4 text-primary" />
+            <span class="text-[10px] uppercase tracking-[0.2em]">{lang}</span>
+          </span>
+
+          <div class="h-6 w-px bg-slate-100 mx-1"></div>
+
+          <button
+            type="button"
+            class="h-9 w-9 rounded-xl text-slate-400 hover:text-primary relative flex items-center justify-center"
+            aria-label="Уведомления"
+          >
+            <Icon name="bell" class="h-4 w-4" />
+            <span class="absolute top-2 right-2 h-2 w-2 bg-red-500 rounded-full border border-white"></span>
+          </button>
+        </div>
+
+        <a
+          href="/admin/content/new"
+          class="hidden sm:flex bg-primary hover:bg-primary/90 text-white font-black px-8 h-12 rounded-xl argon-shadow shadow-primary/30 uppercase text-[10px] tracking-[0.2em] items-center transition-all active:scale-95"
+        >
+          <Icon name="plus" class="h-4 w-4 mr-3" />
+          Быстрый пост
+        </a>
+      </div>
+    </header>
+
+    <main class="flex-1 p-10 pt-0 overflow-auto">
+      <slot />
+    </main>
+  </div>
+</div>

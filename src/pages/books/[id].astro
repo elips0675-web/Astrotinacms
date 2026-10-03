@@ -1,0 +1,20 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import SiteDynamicPage from '../../site/lib/SiteDynamicPage';
+import { books } from '../../site/pages/books-catalog';
+
+export function getStaticPaths() {
+  return books.map((book) => ({ params: { id: String(book.id) } }));
+}
+
+const { id } = Astro.params;
+const params = { id };
+const search = Astro.url.search;
+---
+
+<SiteLayout
+  title="Книга — Библиотека 2026"
+  description="Описание книги библиотеки: аннотация, условия выдачи и заказ."
+>
+  <SiteDynamicPage kind="book" params={params} search={search} client:load />
+</SiteLayout>

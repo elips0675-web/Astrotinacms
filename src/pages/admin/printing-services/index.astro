@@ -1,0 +1,74 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import AdminShell from '../../../components/AdminShell.astro';
+import PageHeader from '../../../components/PageHeader.astro';
+import SearchToolbar from '../../../components/SearchToolbar.astro';
+import Icon from '../../../components/Icon.astro';
+import { MOCK_PRINTING } from '../../../data/mock';
+---
+
+<AdminLayout title="Полиграфия — SuperPanel">
+  <AdminShell>
+    <div class="space-y-6">
+      <PageHeader
+        title="SuperCatalog"
+        subtitle="Полиграфические услуги и форматы"
+        actionHref="/admin/printing-services/new"
+        actionLabel="Новая позиция"
+      />
+
+      <SearchToolbar placeholder="Поиск по полиграфии..." />
+
+      <div class="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-50/50">
+            <tr class="border-slate-100">
+              <th class="text-left p-4 font-black text-[10px] uppercase tracking-widest">Название</th>
+              <th class="text-left p-4 font-black text-[10px] uppercase tracking-widest">Формат</th>
+              <th class="text-left p-4 font-black text-[10px] uppercase tracking-widest">Цена</th>
+              <th class="text-left p-4 font-black text-[10px] uppercase tracking-widest">Статус</th>
+              <th class="text-right p-4 font-black text-[10px] uppercase tracking-widest">Действия</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              MOCK_PRINTING.map((item) => (
+                <tr class="hover:bg-slate-50/50 transition-colors border-slate-50">
+                  <td class="p-4 font-black text-slate-800 italic">
+                    <div class="flex items-center gap-3">
+                      <div class="h-8 w-8 rounded-lg bg-primary/5 flex items-center justify-center text-primary">
+                        <Icon name="printer" class="h-4 w-4" />
+                      </div>
+                      {item.title}
+                    </div>
+                  </td>
+                  <td class="p-4 text-xs font-bold text-slate-500">{item.format}</td>
+                  <td class="p-4 text-xs font-black text-slate-800">{item.price}</td>
+                  <td class="p-4">
+                    <span
+                      class:list={[
+                        'rounded-lg px-2 py-0.5 text-[9px] font-black uppercase tracking-widest inline-block',
+                        item.status === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500',
+                      ]}
+                    >
+                      {item.status === 'active' ? 'Активна' : 'Скрыта'}
+                    </span>
+                  </td>
+                  <td class="p-4 text-right">
+                    <a
+                      href={`/admin/printing-services/new/${item.id}`}
+                      class="h-8 w-8 rounded-lg inline-flex items-center justify-center hover:bg-slate-100 text-slate-400"
+                      aria-label={`Редактировать ${item.title}`}
+                    >
+                      <Icon name="more" class="h-4 w-4" />
+                    </a>
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </AdminShell>
+</AdminLayout>

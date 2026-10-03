@@ -1,0 +1,113 @@
+/*
+ * Тема публичного сайта — порт D:\nlb-studio6-main\src\styles\theme.css
+ * Загружается ТОЛЬКО на публичных страницах (SiteLayout.astro).
+ * Админка использует src/globals.css — эти два файла никогда не встречаются в одном документе.
+ *
+ * Токены переведены из oklch/hex в HSL-тройки "H S% L%", потому что
+ * tailwind.config.mjs маппит их как hsl(var(--x) / <alpha-value>).
+ * Значения цветов идентичны исходнику (расчёт — см. комментарий справа).
+ */
+
+:root {
+  --font-size: 16px;
+
+  --background: 0 0% 100%; /* #ffffff */
+  --foreground: 0 0% 3.9%; /* oklch(0.145 0 0) = #0a0a0a */
+  --card: 0 0% 100%; /* #ffffff */
+  --card-foreground: 0 0% 3.9%;
+  --popover: 0 0% 100%; /* oklch(1 0 0) */
+  --popover-foreground: 0 0% 3.9%;
+
+  --primary: 243.5 81% 4.1%; /* #030213 */
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 0 0% 93.3%; /* oklch(0.95 0.0058 264.53) ≈ #eeeeee */
+  --secondary-foreground: 243.5 81% 4.1%;
+
+  --muted: 240 11.8% 93.3%; /* #ececf0 */
+  --muted-foreground: 240 7% 47.6%; /* #717182 */
+
+  --accent: 220 15.8% 92.5%; /* #e9ebef */
+  --accent-foreground: 243.5 81% 4.1%;
+
+  --destructive: 348 76% 46%; /* #d4183d */
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 0 0% 0%; /* исходник: rgba(0,0,0,0.1) -> alpha задаётся ниже */
+  --border-alpha: 0.1;
+  --input: 0 0% 0%;
+  --input-background: 0 0% 95.3%; /* #f3f3f5 */
+  --switch-background: 0 0% 80%; /* #cbced4 */
+
+  --ring: 0 0% 63.1%; /* oklch(0.708 0 0) = #a1a1a1 */
+
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --radius: 0.625rem;
+}
+
+/*
+ * Базовый слой — порт @layer base из theme.css.
+ * Числа зашиты вместо var(--text-*): Tailwind v3 не эмитит такие
+ * CSS-переменные, а v4 эмитит. Значения = дефолтная шкала Tailwind.
+ */
+html {
+  font-size: var(--font-size);
+}
+
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+::before,
+::after {
+  border-color: hsl(var(--border) / var(--border-alpha));
+}
+
+h1 {
+  font-size: 1.5rem;
+  font-weight: var(--font-weight-medium);
+  line-height: 1.5;
+}
+
+h2 {
+  font-size: 1.25rem;
+  font-weight: var(--font-weight-medium);
+  line-height: 1.5;
+}
+
+h3 {
+  font-size: 1.125rem;
+  font-weight: var(--font-weight-medium);
+  line-height: 1.5;
+}
+
+h4 {
+  font-size: 1rem;
+  font-weight: var(--font-weight-medium);
+  line-height: 1.5;
+}
+
+label {
+  font-size: 1rem;
+  font-weight: var(--font-weight-medium);
+  line-height: 1.5;
+}
+
+button {
+  font-size: 1rem;
+  font-weight: var(--font-weight-medium);
+  line-height: 1.5;
+}
+
+input {
+  font-size: 1rem;
+  font-weight: var(--font-weight-normal);
+  line-height: 1.5;
+}

@@ -1,0 +1,23 @@
+---
+import AdminLayout from '../../../../layouts/AdminLayout.astro';
+import AdminShell from '../../../../components/AdminShell.astro';
+import EntityEditor from '../../../../components/EntityEditor.astro';
+import { MOCK_EVENTS } from '../../../../data/mock';
+import type { WPEvent } from '../../../../data/mock';
+
+export function getStaticPaths() {
+  return MOCK_EVENTS.map((event) => ({ params: { id: String(event.id) }, props: { entity: event } }));
+}
+
+interface Props {
+  entity: WPEvent;
+}
+
+const { entity } = Astro.props;
+---
+
+<AdminLayout title={`${entity.title} — SuperPanel`}>
+  <AdminShell>
+    <EntityEditor kind="events" entity={entity} />
+  </AdminShell>
+</AdminLayout>

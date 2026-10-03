@@ -1,0 +1,20 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import SiteDynamicPage from '../../site/lib/SiteDynamicPage';
+import { servicesData } from '../../site/pages/service-detail';
+
+export function getStaticPaths() {
+  return Object.keys(servicesData).map((id) => ({ params: { id } }));
+}
+
+const { id } = Astro.params;
+const params = { id };
+const search = Astro.url.search;
+---
+
+<SiteLayout
+  title="Услуги — Библиотека 2026"
+  description="Подробное описание услуги библиотеки: возможности, тарифы, расписание и запись."
+>
+  <SiteDynamicPage kind="service" params={params} search={search} client:load />
+</SiteLayout>

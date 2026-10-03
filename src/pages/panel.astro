@@ -1,0 +1,36 @@
+---
+import '../globals.css';
+---
+
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>NLB Studio — SuperPanel</title>
+  </head>
+  <body>
+    <main class="min-h-screen bg-slate-50/50 flex items-center justify-center p-10">
+      <div class="text-center max-w-2xl">
+        <p class="text-[10px] font-black uppercase tracking-[0.2em] text-primary mb-4">NLB Studio</p>
+        <h1 class="text-5xl font-black text-slate-800 tracking-tight mb-6">SuperPanel готов</h1>
+        <p class="text-slate-500 font-bold mb-10">Панель управления контентом Библиотеки 2026 на Astro + Tailwind.</p>
+        <div class="flex items-center justify-center gap-3">
+          <a
+            href="/"
+            class="inline-flex bg-primary hover:bg-primary/90 text-white font-black px-8 h-12 rounded-xl shadow-primary/30 uppercase text-[10px] tracking-[0.2em] items-center"
+          >
+            Открыть сайт
+          </a>
+          <a
+            href="/admin"
+            class="inline-flex border border-slate-300 hover:bg-slate-100 text-slate-700 font-black px-8 h-12 rounded-xl uppercase text-[10px] tracking-[0.2em] items-center"
+          >
+            Открыть дашборд
+          </a>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

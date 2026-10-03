@@ -1,0 +1,15 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Page from '../site/routes/all-news-page';
+import { readPublished, toPublicNews } from '../lib/content';
+
+// Не пререндерится: список новостей приходит из хранилища, которое правит админка,
+// поэтому страница обязана читать его на каждый запрос.
+export const prerender = false;
+
+const items = toPublicNews(await readPublished());
+---
+
+<SiteLayout title="Новости — Библиотека 2026" description="Все новости и анонсы библиотеки.">
+  <Page client:load items={items} />
+</SiteLayout>

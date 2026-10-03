@@ -1,0 +1,148 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import AdminShell from '../../components/AdminShell.astro';
+import Icon from '../../components/Icon.astro';
+import SearchToolbar from '../../components/SearchToolbar.astro';
+import { MOCK_CHAT_USERS } from '../../data/mock';
+
+const activeUser = MOCK_CHAT_USERS[0];
+const initialMessages = [
+  {
+    role: 'model' as const,
+    content: 'Здравствуйте! Я ваш ассистент SuperPanel. Чем могу помочь?',
+  },
+];
+---
+
+<AdminLayout title="Поддержка — SuperPanel">
+  <AdminShell>
+    <div class="max-w-7xl mx-auto space-y-6 h-[calc(100vh-10rem)] flex flex-col">
+      <div class="flex flex-col gap-1">
+        <h1 class="text-3xl font-black text-slate-900 tracking-tight uppercase italic">Support Hub</h1>
+        <p class="text-muted-foreground font-bold uppercase text-[10px] tracking-widest">
+          Ассистент и чат с посетителями
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-4 flex-1 overflow-hidden">
+        <div class="md:col-span-4 border border-slate-200 rounded-xl flex flex-col overflow-hidden bg-white shadow-sm">
+          <div class="p-4 border-b border-slate-100 space-y-4">
+            <h2 class="text-sm font-black text-slate-800 uppercase tracking-tight">Недавние чаты</h2>
+            <SearchToolbar placeholder="Поиск по чатам" />
+          </div>
+
+          <div class="p-2 space-y-1 flex-1 overflow-y-auto">
+            {
+              MOCK_CHAT_USERS.map((user) => (
+                <button
+                  type="button"
+                  class:list={[
+                    'w-full flex items-center gap-3 p-3 rounded-lg transition-all text-left border-l-4',
+                    user.id === activeUser.id
+                      ? 'bg-slate-50 border-primary text-primary'
+                      : 'hover:bg-slate-50 text-slate-600 border-transparent',
+                  ]}
+                >
+                  <div class="h-10 w-10 rounded-lg border border-slate-100 shrink-0 bg-slate-100 flex items-center justify-center">
+                    <span class="text-[10px] font-black">{user.name[0]}</span>
+                  </div>
+                  <div class="flex-1 overflow-hidden">
+                    <div class="flex justify-between items-baseline mb-0.5">
+                      <span class="font-bold text-sm truncate tracking-tight">{user.name}</span>
+                      <span class="text-[9px] font-bold text-slate-400">{user.time}</span>
+                    </div>
+                    <p class="text-xs font-medium truncate opacity-70 italic">{user.lastMessage}</p>
+                  </div>
+                </button>
+              ))
+            }
+          </div>
+        </div>
+
+        <div class="md:col-span-8 border border-slate-200 rounded-xl flex flex-col overflow-hidden bg-white shadow-sm">
+          <div class="p-4 border-b border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-lg bg-slate-800 shadow-lg flex items-center justify-center">
+                <Icon name="bot" class="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <h2 class="text-base font-black text-slate-900 uppercase italic">Assistant AI</h2>
+                <p class="text-[9px] font-black uppercase tracking-widest text-emerald-500 flex items-center gap-1.5">
+                  <span class="h-1.5 w-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                  Online
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+              <button
+                type="button"
+                class="h-8 rounded-lg px-4 text-[10px] font-black uppercase tracking-widest gap-2 flex items-center border border-blue-200 bg-blue-50 text-blue-600"
+              >
+                <Icon name="clock" class="h-3 w-3" />
+                В работе
+              </button>
+              <button
+                type="button"
+                class="h-8 rounded-lg px-4 text-[10px] font-black uppercase tracking-widest gap-2 flex items-center border border-emerald-200 bg-emerald-50 text-emerald-600"
+              >
+                <Icon name="checkCircle" class="h-3 w-3" />
+                Решено
+              </button>
+              <button
+                type="button"
+                class="h-8 w-8 rounded-lg flex items-center justify-center hover:bg-slate-100 text-slate-400 transition-all active:rotate-180"
+                aria-label="Обновить"
+              >
+                <Icon name="refresh" class="h-3.5 w-3.5" />
+              </button>
+            </div>
+          </div>
+
+          <div class="p-6 flex-1 overflow-y-auto bg-slate-50/10 space-y-6">
+            {
+              initialMessages.map((msg) => (
+                <div class="flex gap-3 flex-row">
+                  <div class="h-8 w-8 rounded-lg bg-slate-800 flex items-center justify-center shrink-0">
+                    <Icon name="bot" class="h-4 w-4 text-white" />
+                  </div>
+                  <div class="flex flex-col max-w-[85%] items-start">
+                    <div class="p-4 rounded-lg text-sm font-semibold shadow-sm bg-white text-slate-800 border border-slate-200 rounded-tl-none whitespace-pre-wrap">
+                      {msg.content}
+                    </div>
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+
+          <div class="p-4 border-t border-slate-100 bg-white flex items-center gap-3">
+            <button
+              type="button"
+              class="h-12 w-12 rounded-xl border border-slate-200 text-slate-400 hover:text-primary transition-all flex items-center justify-center shrink-0"
+              aria-label="Прикрепить файл"
+            >
+              <Icon name="paperclip" class="h-5 w-5" />
+            </button>
+
+            <input
+              type="text"
+              name="message"
+              placeholder="Введите сообщение..."
+              aria-label="Сообщение"
+              class="h-12 flex-1 rounded-xl bg-slate-50 border-slate-200 px-4 font-bold text-slate-900 outline-none focus-visible:ring-1 focus-visible:ring-primary"
+            />
+
+            <button
+              type="button"
+              class="h-12 w-12 rounded-xl bg-primary hover:bg-primary/90 text-white transition-all shadow-lg shadow-primary/20 flex items-center justify-center shrink-0"
+              aria-label="Отправить"
+            >
+              <Icon name="send" class="h-5 w-5" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </AdminShell>
+</AdminLayout>

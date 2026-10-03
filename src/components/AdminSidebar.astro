@@ -1,0 +1,80 @@
+---
+import Icon from './Icon.astro';
+
+export interface Props {
+  activePath?: string;
+}
+
+const { activePath = Astro.url.pathname } = Astro.props;
+
+const navItems = [
+  { title: 'Дашборд', icon: 'dashboard', href: '/admin' },
+  { title: 'Контент', icon: 'file', href: '/admin/content' },
+  { title: 'Услуги', icon: 'briefcase', href: '/admin/services' },
+  { title: 'Полиграфия', icon: 'printer', href: '/admin/printing-services' },
+  { title: 'Мероприятия', icon: 'calendar', href: '/admin/events' },
+  { title: 'Медиа', icon: 'image', href: '/admin/media' },
+  { title: 'Поддержка', icon: 'support', href: '/admin/support' },
+  { title: 'Настройки', icon: 'settings', href: '/admin/settings' },
+];
+
+const isActive = (href: string) =>
+  activePath === href || (href !== '/admin' && activePath.startsWith(href));
+---
+
+<aside class="w-64 shrink-0 border-r-0 argon-shadow z-40 bg-white hidden md:flex flex-col h-screen sticky top-0">
+  <div class="p-4 flex items-center">
+    <a href="/admin" class="flex items-center gap-3">
+      <div
+        class="bg-primary h-10 w-10 rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-primary/30 transition-all active:scale-95"
+      >
+        <Icon name="sparkles" class="text-white h-6 w-6" />
+      </div>
+      <div class="flex flex-col leading-none">
+        <span class="font-black text-slate-800 text-lg tracking-tighter uppercase italic">SuperPanel</span>
+        <span class="text-[9px] font-black text-primary uppercase tracking-[0.2em] ml-0.5">Console</span>
+      </div>
+    </a>
+  </div>
+
+  <nav class="px-3 flex-1 overflow-y-auto">
+    <p class="px-3 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4">Основная навигация</p>
+    <ul class="space-y-0">
+      {
+        navItems.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              aria-current={isActive(item.href) ? 'page' : undefined}
+              class:list={[
+                'rounded-xl h-12 px-4 mb-2 flex items-center gap-3 font-bold transition-all',
+                isActive(item.href)
+                  ? 'bg-primary/10 text-primary'
+                  : 'text-slate-500 hover:text-primary hover:bg-primary/5',
+              ]}
+            >
+              <Icon name={item.icon} class="h-5 w-5 shrink-0" />
+              <span>{item.title}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+
+  <div class="p-4 border-t border-slate-100">
+    <a
+      href="/admin/settings"
+      class="w-full justify-start p-2 h-auto hover:bg-slate-100 rounded-xl group flex items-center gap-3"
+    >
+      <div class="h-10 w-10 border-2 border-white argon-shadow shrink-0 rounded-xl bg-primary text-white font-black flex items-center justify-center">
+        AD
+      </div>
+      <div class="flex flex-col items-start leading-tight flex-1 overflow-hidden text-left">
+        <span class="text-sm font-black text-slate-800 truncate w-full">Admin User</span>
+        <span class="text-[10px] font-bold text-muted-foreground uppercase truncate w-full">SuperOwner</span>
+      </div>
+      <Icon name="chevronRight" class="h-4 w-4 text-slate-400 rotate-90" />
+    </a>
+  </div>
+</aside>
